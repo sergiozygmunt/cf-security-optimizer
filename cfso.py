@@ -101,12 +101,14 @@ def main():
         'always_use_https': {'value': 'on'},
         'automatic_https_rewrites': {'value': 'on'},
         'security_header': {
-            'strict_transport_security': {
-                'enabled': True,
-                'max_age': 31536000,  # 12 months in seconds
-                'include_subdomains': True,
-                'preload': True,
-                'nosniff': True
+            'value': {
+                'strict_transport_security': {
+                    'enabled': True,
+                    'max_age': 31536000,  # Maximum age in seconds
+                    'include_subdomains': True,
+                    'preload': True,
+                    'nosniff': True
+                }
             }
         }
     }
