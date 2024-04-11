@@ -40,21 +40,21 @@ def check_dns_record_exists(cf, zone_id, record_types, name):
 
 def submit_domain_to_hsts_preload(domain_name):
     """Submit the domain to the HSTS preload list using a POST request."""
-    url = "https://hstspreload.org/api/v2/submit"
-    data = {'domain': domain_name}
-    response = requests.post(url, data=data)
+    url = f"https://hstspreload.org/api/v2/submit?domain={domain_name}"
+    response = requests.post(url)
     if response.status_code == 200:
         response_json = response.json()
         if "errors" in response_json:
             for error in response_json["errors"]:
-                print_status(False, f"{error['summary']} - {error['message']}")
-        else:
-            print_status(True, "Domain submitted to HSTS preload list successfully.")
+                print_status(False, f"Error: {error['summary']} - {error['message']}")
+            if not response_json.get("errors"):  # If the errors list is empty, submission was successful
+                print_status(True, f"Domain {domain_name} submitted to HSTS preload list successfully.")
         if "warnings" in response_json:
             for warning in response_json["warnings"]:
-                print(f"[i] {warning['summary']} - {warning['message']}")
+                print(f"Warning: {warning['summary']} - {warning['message']}")
     else:
-        print_status(False, f"Failed to submit domain to HSTS preload list. Status code: {response.status_code}")
+        print_status(False, f"Failed to submit domain {domain_name} to HSTS preload list. Status code: {response.status_code}")
+        print("Response text:", response.text)  # Print the response text for debugging
 
 def main():
     zone_name, api_token, api_key = determine_arguments()
